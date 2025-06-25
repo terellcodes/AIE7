@@ -1,0 +1,16 @@
+[project]
+name = "llm_python_basics"
+version = "0.1.0"
+description = "A learning notebook for LLM students to master Python basics"
+authors = [{ name = "Kat & Vincent"}]
+dependencies = [
+    "pandas",
+    "matplotlib",   # if plotting is involved
+    "numpy",
+    "python-dateutil",
+    "jupyter",
+]
+
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
