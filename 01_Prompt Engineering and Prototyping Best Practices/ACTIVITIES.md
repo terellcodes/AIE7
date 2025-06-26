@@ -1,3 +1,11 @@
+## Discussion Question
+__What are some limitations of vibe checking as an evaluation tool?__
+- It's only a quick check, not exhaustive. Not all bugs and shortcomings will be caught. Be sure to still eventually add evals and tests.
+- There may still be edge cases, unique scenarios and issues that only arise during real-world usage
+- Vibe checking is subjective. What you might think is okay might be a problem to some subset of your eventual users.
+- Because the app is always changing just because it passes the vibe check now, it might not in the future after changes have been made.
+- It is tedious and quite manual. It may not be efficient and scalable to vibe check as the functionality of the app grows and becomes more complex
+
 ## Vibe Check #1
 **Prompt:**
 >"What musician famously performed a concert when Zimbabwe gained it independence?"
@@ -216,7 +224,6 @@
 - Use of analogies/examples? ✅
 - Avoids jargon? ✅
 - Tone appropriate for a complete beginner? ✅
-
 
 ## App Improvements:
 - Formatting: Markup, JSON, Code, Mathematical Formulas
