@@ -225,11 +225,24 @@ __What are some limitations of vibe checking as an evaluation tool?__
 - Avoids jargon? ✅
 - Tone appropriate for a complete beginner? ✅
 
-## App Improvements:
-- Formatting: Markup, JSON, Code, Mathematical Formulas
+### 3 Lessons Learned
+- While vibe coding, vibe checking can help you quickly determine if what you desire to build is capable given the capabilities of the LLM and the architecture you used.
+- For any application rendering response from an LLM it is very important to ensure the formatting of the result is rendered correctly
+- Can't think of anymore vibe checks? Provide chatgpt with a screenshot of your application and ask it to give you more suggestions
+
+### 3 Lessons not yet learned
+- Since LLM responses are indeterministic how can we write tests to confirm accurate behaviour of the app when changes are made?
+- How can we allow a user to call an LLM without having to copy and paste their openai api key? A begginer will not be able to do this
+- How can we catch inappropriate or unuseful LLM responses in production when thousands of users are using it at scale?
+
+
+## App Improvements Made:
+- Formatting: Markup, JSON, Code, Mathematical Formulas [done]
+- Easily copy the contents of the response [done]
+- Easily regenerate a response [done]
+- Wider conversation window UI [done]
+
+## Future Improvements
 - Memory
-- Easily copy the contents of the response
-- Easily regenerate a response
 - Stopping harm if there are specific keywords
 - Recommending specific help if any indication of pottential harm by the user
-- Wider conversation window UI
