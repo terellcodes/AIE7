@@ -53,10 +53,50 @@ Run the repository and complete the following:
 
 What is the purpose of the `chunk_overlap` parameter when using `RecursiveCharacterTextSplitter` to prepare documents for RAG, and what trade-offs arise as you increase or decrease its value?
 
+#### ✅ ANSWER
+`chunk_overlap` declares how many characters the current chunk will overlapp with the previous chunk. 
+
+Let's say the `chunk_overlap` is 50 and  the first chunk stops at character 2000. The next chunk will not start at character 2001. Instead it will start at character 1951 which is 2001 - 50).
+
+When one chunk ends, the next begins overlapping the previous chunk by the specified number of characters. This mitigagtes lost meaning between splits.
+
+Increase chunk overlap:
+- Pro: Better context retention—especially across chunk boundaries. Fragmented context is less likely to break retrieval. 
+- Con: More redundancy—embeddings overlap, increasing storage and compute costs. Retrieval latency and vector DB size may inflate.  
+
+
+Decrease chunk overlap:
+- Pro: Less redundancy—fewer overlapping characters means fewer embeddings for duplicated content, improving efficiency.  
+- Higher risk of context loss—semantic meaning that spans a chunk boundary may be partially omitted, reducing RAG accuracy.
+
+
+
 #### ❓ Question:
 
 Your retriever is configured with `search_kwargs={"k": 5}`. How would adjusting `k` likely affect RAGAS metrics such as Context Precision and Context Recall in practice, and why?
 
+#### ✅ ANSWER
+**Context Precision** measures the percentage of retrieved chunks that are relevant to the query. Increasing k often lowers precision because you pull in more non-relevant context alongside relevant ones. Decreasing k can raise precision by reducing false positives, but risks missing relevant context entirely.
+
+**Context Recall** measures the percentage of all relevant chunks in the vector store that are actually retrieved. Increasing k improves recall by capturing more of the relevant set, while decreasing k lowers recall by potentially omitting relevant chunks.
+
+Trade-off:
+	•	High k → higher recall, lower precision.
+	•	Low k → higher precision, lower recall.
+
+The optimal k balances both, and should be tuned with retrieval evaluation (e.g., RAGAS metrics) on representative queries.
+
+Advanced adjustments:
+	•	Query optimization → Improves semantic matching, helping both metrics.
+	•	Memory-Augmented RAG → Reduces the recall penalty of smaller k by storing relevant context after retrieval.
+	•	Contextual compression → Allows for higher k without sacrificing precision by re-ranking or filtering retrieved chunks.
+
+
 #### ❓ Question:
 
 Compare the `agent` and `agent_helpful` assistants defined in `langgraph.json`. Where does the helpfulness evaluator fit in the graph, and under what condition should execution route back to the agent vs. terminate?
+
+#### ✅ ANSWER
+The helpfulness evaluator is called after the agent generates a response. If the current response is helpful in answering the user's initial query the agent terminates. The agent also terminates if it has done too much work without coming up with a helpful answer (ie. more than 10 agent-tool-evaluator calls) to avoid and endless agent run.
+
+Execution routes back the agent if the response is not helpful and agent has not yet been running for too long.

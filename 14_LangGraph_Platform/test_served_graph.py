@@ -1,5 +1,5 @@
 from langgraph_sdk import get_sync_client
-
+from pprint import pprint
 
 def main():
     client = get_sync_client(url="http://localhost:2024")
@@ -17,7 +17,7 @@ def main():
         stream_mode="updates",
     ):
         print(f"Receiving new event of type: {chunk.event}...")
-        print(chunk.data)
+        pprint(chunk.data)
         print("\n\n")
 
 
