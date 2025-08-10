@@ -99,4 +99,4 @@ Compare the `agent` and `agent_helpful` assistants defined in `langgraph.json`. 
 #### ✅ ANSWER
 The helpfulness evaluator is called after the agent generates a response. If the current response is helpful in answering the user's initial query the agent terminates. The agent also terminates if it has done too much work without coming up with a helpful answer (ie. more than 10 agent-tool-evaluator calls) to avoid and endless agent run.
 
-Execution routes back the agent if the response is not helpful and agent has not yet been running for too long.
+Execution routes back to the agent if the response is not helpful and agent has not yet been running for too long.
