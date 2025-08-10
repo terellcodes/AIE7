@@ -23,11 +23,11 @@ def _build_model_with_tools():
     return model.bind_tools(get_tool_belt())
 
 
-def call_model(state: AgentState) -> Dict[str, Any]:
+async def call_model(state: AgentState) -> Dict[str, Any]:
     """Invoke the model with the accumulated messages and append its response."""
     model = _build_model_with_tools()
     messages = state["messages"]
-    response = model.invoke(messages)
+    response = await model.ainvoke(messages)
     return {"messages": [response]}
 
 

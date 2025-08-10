@@ -24,11 +24,11 @@ def _build_model_with_tools():
     return model.bind_tools(get_tool_belt())
 
 
-def call_model(state: AgentState) -> Dict[str, Any]:
+async def call_model(state: AgentState) -> Dict[str, Any]:
     """Invoke the model with the accumulated messages and append its response."""
     model = _build_model_with_tools()
     messages = state["messages"]
-    response = model.invoke(messages)
+    response = await model.ainvoke(messages)
     return {"messages": [response]}
 
 
@@ -40,7 +40,7 @@ def route_to_action_or_helpfulness(state: AgentState):
     return "helpfulness"
 
 
-def helpfulness_node(state: AgentState) -> Dict[str, Any]:
+async def helpfulness_node(state: AgentState) -> Dict[str, Any]:
     """Evaluate helpfulness of the latest response relative to the initial query."""
     # If we've exceeded loop limit, short-circuit with END decision marker
     if len(state["messages"]) > 10:
@@ -64,7 +64,7 @@ def helpfulness_node(state: AgentState) -> Dict[str, Any]:
         helpfulness_prompt_template | helpfulness_check_model | StrOutputParser()
     )
 
-    helpfulness_response = helpfulness_chain.invoke(
+    helpfulness_response = await helpfulness_chain.ainvoke(
         {
             "initial_query": initial_query.content,
             "final_response": final_response.content,

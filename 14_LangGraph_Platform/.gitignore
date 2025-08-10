@@ -1,0 +1,10 @@
+# Ignore build artifacts
+build/
+dist/
+*.egg-info/
+.eggs/
+
+# Ignore logs
+logs/
+*.log
+
