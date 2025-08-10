@@ -1,5 +1,5 @@
 from dotenv import load_dotenv
-from mcp.server.fastmcp import FastMCP
+from fastmcp import FastMCP
 from pydantic import BaseModel
 import yfinance as yf
 from typing import Dict, List, Optional
@@ -125,8 +125,7 @@ def get_comprehensive_stock_data(stock_symbol: str) -> StockAnalysis:
             dividend_yield=0.0,
             fifty_two_week_range="Error",
             recent_news=["Unable to fetch news"],
-            prompt=f"Error retrieving data for {stock_symbol}: {str(e)}"
         )
 
 if __name__ == "__main__":
-    mcp.run(transport="streamable-http")
+    mcp.run(transport="streamable-http", host="127.0.0.1", port=8000)
