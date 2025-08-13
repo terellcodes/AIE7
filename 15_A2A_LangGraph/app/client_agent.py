@@ -13,8 +13,8 @@ from langgraph.graph.message import add_messages
 from langgraph.prebuilt import ToolNode
 from langchain_core.tools import BaseTool
 
-from app.tools import get_tool_belt
 from app.a2a_agent_client import A2AAgentClient
+from langchain_core.messages import SystemMessage
 
 
 class AgentState(TypedDict):
@@ -24,6 +24,8 @@ class AgentState(TypedDict):
 def _build_model_with_tools(model, tools):
     return model.bind_tools(tools)
 
+def __add_system_prompt(state: Dict[str, Any]):
+    return {"messages": [SystemMessage(content="You are a helpful assistant that can answer questions and help with tasks. Simply pass the user's query to the a2a_call tool to answer the question.")] + state["messages"]}
 
 def _call_model(state: Dict[str, Any], model, tools) -> Dict[str, Any]:
     model_with_tools = _build_model_with_tools(model, tools)
@@ -76,10 +78,12 @@ def build_graph():
     # Wrap to capture model and tools
     def agent_node(state: Dict[str, Any]) -> Dict[str, Any]:
         return _call_model(state, model, tools)
-
+    
+    graph.add_node("add_system_prompt", __add_system_prompt)
     graph.add_node("agent", agent_node)
     graph.add_node("action", tool_node)
-    graph.set_entry_point("agent")
+    graph.set_entry_point("add_system_prompt")
+    graph.add_edge("add_system_prompt", "agent")
 
     graph.add_conditional_edges(
         "agent",
