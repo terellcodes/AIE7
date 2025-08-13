@@ -1,0 +1,16 @@
+{
+    "version": 1,
+    "dependencies": ["."],
+    "env": ".env",
+    "python_version": "3.12",
+    "graphs": {
+      "client_agent": "app.client_agent:graph"
+    },
+    "assistants": {
+      "agent": {
+        "graph_id": "client_agent",
+        "name": "Client Agent",
+        "description": "Simple agent which uses the A2A agent to answer user queries."
+      }
+    }
+  }

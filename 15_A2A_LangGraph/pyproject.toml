@@ -13,7 +13,8 @@ dependencies = [
     "pydantic>=2.10.6",
     "python-dotenv>=1.1.0",
     "uvicorn>=0.34.2",
-    "sse-starlette>=2.3.6",
+    # Pin compatible sse-starlette for langgraph-api inmem server
+    "sse-starlette>=2.1.0,<2.2.0",
     "starlette>=0.46.2",
     "a2a-sdk>=0.3.0",
     "tavily-python>=0.3.0",
@@ -21,6 +22,9 @@ dependencies = [
     "tiktoken>=0.5.1",
     "qdrant-client>=1.7.0",
     "pymupdf>=1.23.0",
+    # Keep CLI minimal here; we'll use the inmem extra in dev group
+    "langgraph-api>=0.2.129",
+    "langgraph-runtime-inmem>=0.6.12",
 ]
 
 [tool.hatch.build.targets.wheel]
@@ -29,3 +33,9 @@ packages = ["app"]
 [build-system]
 requires = ["hatchling"]
 build-backend = "hatchling.build"
+
+[dependency-groups]
+dev = [
+    # Install CLI with in-memory server dependencies
+    "langgraph-cli[inmem]>=0.3.6",
+]

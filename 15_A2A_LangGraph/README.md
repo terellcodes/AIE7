@@ -87,6 +87,10 @@ Do this by creating a Simple Agent that can make API calls to the 🤖Agent Node
 
 What are the core components of an `AgentCard`?
 
+#### ✅ ANSWER
+- Capabilities: indicates the possible ways that other agents can interact with the agent (streaming, ) 
+- Skills: the actions that the agents can take 
+
 ### ❓ Question #2:
 
 Why is A2A (and other such protocols) important in your own words?
