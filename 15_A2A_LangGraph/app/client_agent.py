@@ -5,6 +5,7 @@ import os
 from typing import Annotated, Any, Dict, List, TypedDict
 import json
 
+import httpx
 from dotenv import load_dotenv
 from langchain_core.messages import HumanMessage
 from langchain_openai import ChatOpenAI
@@ -14,6 +15,8 @@ from langgraph.prebuilt import ToolNode
 from langchain_core.tools import BaseTool
 
 from app.a2a_agent_client import A2AAgentClient
+from app.a2a_card_summary import summarize_agent_card
+from a2a.client import A2ACardResolver
 from langchain_core.messages import SystemMessage
 
 
@@ -41,7 +44,39 @@ def _route_action_or_end(state: Dict[str, Any]):
     return END
 
 
-def build_graph():
+async def _get_dynamic_tool_description(base_url: str) -> str:
+    """Get dynamic tool description based on agent card"""
+    try:
+        async with httpx.AsyncClient(timeout=10.0) as client:
+            resolver = A2ACardResolver(httpx_client=client, base_url=base_url)
+            agent_card = await resolver.get_agent_card()
+            return summarize_agent_card(agent_card)
+    except Exception:
+        return "Call the external A2A agent to answer the user's question. Use this when you want the other agent to handle the query."
+
+class A2AOnDemandTool(BaseTool):
+    name: str = "a2a_call"
+    description: str = ""  # Will be set by factory method
+    
+    @classmethod
+    async def create(cls, base_url: str) -> "A2AOnDemandTool":
+        """Async factory method to create tool with dynamic description"""
+        description = await _get_dynamic_tool_description(base_url)
+        print(f"Tool description: {description}")
+        instance = cls()
+        instance.description = description
+        return instance
+
+    def _run(self, query: str) -> str:  # pragma: no cover
+        raise NotImplementedError("Use the async version of this tool")
+
+    async def _arun(self, query: str) -> str:
+        base_url = os.getenv("A2A_BASE_URL", "http://localhost:10000")
+        async with A2AAgentClient(base_url=base_url) as client:
+            response: Dict[str, Any] = await client.send_text(query)
+            return json.dumps(response)
+
+async def build_graph():
     """
     Build and compile a minimal LangGraph agent graph that can call the external A2A agent via a ToolNode.
     Returns a compiled graph. Input shape: {"messages": [HumanMessage(...), ...]}
@@ -53,24 +88,11 @@ def build_graph():
     # Base LLM
     model = ChatOpenAI(model="gpt-4o-mini", temperature=0)
 
-    # Define a tool that constructs an A2A client on-demand per call
-    class A2AOnDemandTool(BaseTool):
-        name: str = "a2a_call"
-        description: str = (
-            "Call the external A2A agent to answer the user's question. "
-            "Use this when you want the other agent to handle the query."
-        )
+    # Create tool with dynamic description
+    base_url = os.getenv("A2A_BASE_URL", "http://localhost:10000")
+    a2a_tool = await A2AOnDemandTool.create(base_url)
 
-        def _run(self, query: str) -> str:  # pragma: no cover
-            raise NotImplementedError("Use the async version of this tool")
-
-        async def _arun(self, query: str) -> str:
-            base_url = os.getenv("A2A_BASE_URL", "http://localhost:10000")
-            async with A2AAgentClient(base_url=base_url) as client:
-                response: Dict[str, Any] = await client.send_text(query)
-                return json.dumps(response)
-
-    tools = [A2AOnDemandTool()]
+    tools = [a2a_tool]
 
     graph = StateGraph(AgentState)
     tool_node = ToolNode(tools)
@@ -99,7 +121,7 @@ async def demo() -> None:
     base_url = "http://localhost:10000"
     async with A2AAgentClient(base_url=base_url) as client:
         _ = client  # placeholder to ensure client can initialize in demo
-        compiled_graph = build_graph()
+        compiled_graph = await build_graph()
         result = await compiled_graph.ainvoke({
             "messages": [
                 HumanMessage(content="Use the external agent to summarize the latest developments in AI.")
@@ -108,7 +130,11 @@ async def demo() -> None:
         print(result)
 
 
-graph = build_graph()
+# For LangGraph CLI, create graph asynchronously
+async def _create_graph():
+    return await build_graph()
+
+graph = asyncio.run(_create_graph())
 
 if __name__ == "__main__":
     asyncio.run(demo())
