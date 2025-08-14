@@ -88,12 +88,20 @@ Do this by creating a Simple Agent that can make API calls to the 🤖Agent Node
 What are the core components of an `AgentCard`?
 
 #### ✅ ANSWER
-- Capabilities: indicates the possible ways that other agents can interact with the agent (streaming, ) 
-- Skills: the actions that the agents can take 
+	•	Name – Human-readable name of the agent.
+	•	Description – Short summary of what the agent does.
+	•	URL / Endpoint – Where the agent can be contacted (often a /.well-known/agent.json location).
+	•	Capabilities – General abilities the agent supports (e.g., streaming, push notifications, multimodal input).
+	•	Modalities – Types of content or interaction formats supported (e.g., text, images, audio, video, iframes).
+	•	Skills – Specific tasks or domains the agent can perform (e.g., “book flights,” “summarize documents,” “generate images”).
+
 
 ### ❓ Question #2:
 
 Why is A2A (and other such protocols) important in your own words?
+
+#### ✅ ANSWER
+A2A is important because it creates a universal language for AI agents to communicate, no matter which framework they’re built on. This allows agents to tap into each other’s capabilities, turning remote agents into “tools” that your own agent can use on demand. It also lays the foundation for future agent marketplaces, where your agent can find and collaborate with the best agents to complete complex tasks.
 
 ### 🚧 Advanced Build:
 
