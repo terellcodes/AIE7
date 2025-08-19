@@ -1,0 +1,60 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# Virtual environments
+.env
+.venv
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Jupyter Notebook
+.ipynb_checkpoints
+
+# Cache files
+*.cache
+cache_performance_*.json
+test_results_*.json
+behavioral_comparison_*.json
+
+# Build artifacts
+uv.lock
+
+# LangGraph
+.langgraph_api/
+
+# Data repositories
+DataRepository/
+
+# Analysis outputs (but not the analysis module)
+*.analysis
+analysis_*.json
+analysis_results/
