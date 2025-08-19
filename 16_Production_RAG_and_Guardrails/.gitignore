@@ -58,3 +58,4 @@ DataRepository/
 *.analysis
 analysis_*.json
 analysis_results/
+cache/
