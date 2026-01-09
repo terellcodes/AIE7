@@ -1,0 +1,16 @@
+TODO:
+- New Entities:
+    - Task 1: Class VectorDatabaseWithMetadata
+        - same operations as VectorDatabase
+        - more implementation details below
+- Task 2: Chunking
+    - Task 2A: Create an index, mapping each chunk to a chapter and section:
+    {"chapter name": [list of embeddings], "section_name": [list of embeddings]} 
+    - Task 2B: store this index as a field on VectorDatabaseWithMetadata
+- Pre-Filtering
+    - Task 3: modifify VectorDatabaseWithMetadata such that when searching by text, you
+        - Task 3A: make an chatgpt call to determine a list of sections and chapter names that match the query_text. leave the prompt as a place holder
+        - Task 3B: uses the index to determine which embeddings match the returned section and chapter names
+            - only performs similarity search on the embeddings retrieved based on section and chapter matching
+            - if no embeddings are retrieved from the index perform a similarity search on all embeddings in the vector store
+            - return the similarity matches
